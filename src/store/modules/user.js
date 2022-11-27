@@ -1,4 +1,5 @@
 import { login, getInfo, logout } from '@/api/login'
+import router from '@/router/routers'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const user = {
@@ -30,13 +31,18 @@ const user = {
     Login({ commit }, userInfo) {
       const rememberMe = userInfo.rememberMe
       return new Promise((resolve, reject) => {
-        login(userInfo.username, userInfo.password, userInfo.code, userInfo.uuid).then(res => {
-          setToken(res.token, rememberMe)
-          commit('SET_TOKEN', res.token)
-          setUserInfo(res.user, commit)
-          // 第一次加载菜单时用到， 具体见 src 目录下的 permission.js
-          commit('SET_LOAD_MENUS', true)
-          resolve()
+        login(userInfo.email, userInfo.password, userInfo.code, userInfo.uuid).then(res => {
+          if (res.user.user.dept.name == '普通用户') {
+            router.push({ path: '/404' });
+            // this.$router.push({ path: '*', redirect: '/404', hidden: true })
+          } else{
+            setToken(res.token, rememberMe)
+            commit('SET_TOKEN', res.token)
+            setUserInfo(res.user, commit)
+            // 第一次加载菜单时用到， 具体见 src 目录下的 permission.js
+            commit('SET_LOAD_MENUS', true)
+            resolve()
+          }
         }).catch(error => {
           reject(error)
         })

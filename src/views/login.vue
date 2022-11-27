@@ -4,8 +4,8 @@
       <h3 class="title">
         ELADMIN 后台管理系统
       </h3>
-      <el-form-item prop="username">
-        <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号">
+      <el-form-item prop="email">
+        <el-input v-model="loginForm.email" type="text" auto-complete="off" placeholder="邮箱">
           <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
         </el-input>
       </el-form-item>
@@ -56,14 +56,14 @@ export default {
       codeUrl: '',
       cookiePass: '',
       loginForm: {
-        username: 'admin',
-        password: '123456',
+        email: '',
+        password: '',
         rememberMe: false,
         code: '',
         uuid: ''
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', message: '用户名不能为空' }],
+        email: [{ required: true, trigger: 'blur', message: '邮箱不能为空' }],
         password: [{ required: true, trigger: 'blur', message: '密码不能为空' }],
         code: [{ required: true, trigger: 'change', message: '验证码不能为空' }]
       },
@@ -102,14 +102,14 @@ export default {
       })
     },
     getCookie() {
-      const username = Cookies.get('username')
+      const email = Cookies.get('email')
       let password = Cookies.get('password')
       const rememberMe = Cookies.get('rememberMe')
       // 保存cookie里面的加密后的密码
       this.cookiePass = password === undefined ? '' : password
       password = password === undefined ? this.loginForm.password : password
       this.loginForm = {
-        username: username === undefined ? this.loginForm.username : username,
+        email: email === undefined ? this.loginForm.email : email,
         password: password,
         rememberMe: rememberMe === undefined ? false : Boolean(rememberMe),
         code: ''
@@ -118,7 +118,7 @@ export default {
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         const user = {
-          username: this.loginForm.username,
+          email: this.loginForm.email,
           password: this.loginForm.password,
           rememberMe: this.loginForm.rememberMe,
           code: this.loginForm.code,
@@ -130,11 +130,11 @@ export default {
         if (valid) {
           this.loading = true
           if (user.rememberMe) {
-            Cookies.set('username', user.username, { expires: Config.passCookieExpires })
+            Cookies.set('email', user.email, { expires: Config.passCookieExpires })
             Cookies.set('password', user.password, { expires: Config.passCookieExpires })
             Cookies.set('rememberMe', user.rememberMe, { expires: Config.passCookieExpires })
           } else {
-            Cookies.remove('username')
+            Cookies.remove('email')
             Cookies.remove('password')
             Cookies.remove('rememberMe')
           }

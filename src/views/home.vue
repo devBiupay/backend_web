@@ -1,5 +1,5 @@
 <template>
-  <div class="dashboard-container">
+  <!-- <div class="dashboard-container">
     <div class="dashboard-editor-container">
       <github-corner class="github-corner" />
 
@@ -8,7 +8,7 @@
       <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
         <line-chart :chart-data="lineChartData" />
       </el-row>
-      <el-row :gutter="32">
+      <el :gutter="32">
         <el-col :xs="24" :sm="24" :lg="8">
           <div class="chart-wrapper">
             <radar-chart />
@@ -24,9 +24,10 @@
             <bar-chart />
           </div>
         </el-col>
-      </el-row>
+      </el>
     </div>
-  </div>
+  </div> -->
+  <h1>Hi ,biupay</h1>
 </template>
 
 <script>
