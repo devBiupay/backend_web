@@ -69,8 +69,8 @@
               <el-descriptions-item label="订单状态">{{stausMap[dialogInfo.status]}}</el-descriptions-item>
               <el-descriptions-item label="汇款金额">{{dialogInfo.amount}} {{dialogInfo.currency}}</el-descriptions-item>
               <el-descriptions-item label="订单汇率">{{dialogInfo.rate}}</el-descriptions-item>
-              <el-descriptions-item label="电汇费">{{0.0}}</el-descriptions-item>
-              <el-descriptions-item label="足额到账费">{{0.0}}</el-descriptions-item>
+              <el-descriptions-item label="电汇费">{{dialogInfo.spotFee}}</el-descriptions-item>
+              <el-descriptions-item label="足额到账费">{{dialogInfo.fullFee}}</el-descriptions-item>
               <el-descriptions-item label="手续费">{{dialogInfo.cnyFee}}</el-descriptions-item>
               <el-descriptions-item label="需支付金额">{{dialogInfo.cnyAmount}}{{" CNY"}}</el-descriptions-item>
             </el-descriptions>
@@ -85,14 +85,14 @@
             <!-- 分割线 -->
             <div class="lineOfDivision"></div>
             <el-descriptions title="汇款人信息" bordered>
-              <el-descriptions-item label="实际付款人">{{dialogInfo.payerLastName}}{{dialogInfo.payerFirstName}}</el-descriptions-item>
-              <el-descriptions-item label="汇款人关系">{{dialogInfo.payerRelationShip}}</el-descriptions-item>
-              <el-descriptions-item label="身份证号">{{dialogInfo.payerIdNumber}}</el-descriptions-item>
+              <el-descriptions-item label="实际付款人">{{dialogInfo.kyc.payerLastName}}{{dialogInfo.kyc.payerFirstName}}</el-descriptions-item>
+              <el-descriptions-item label="汇款人关系">{{this.payerRelationShipMap[dialogInfo.kyc.payerRelationShip]}}</el-descriptions-item>
+              <el-descriptions-item label="身份证号">{{dialogInfo.kyc.payerIdNumber}}</el-descriptions-item>
               <!-- TODO:证件照片 -->
             </el-descriptions>
             <div class="lineOfDivision"></div>
             <el-descriptions title="收款账户信息" bordered>
-              <el-descriptions-item label="收款国家">{{""}}</el-descriptions-item>
+              <el-descriptions-item label="收款国家">{{dialogInfo.resource?.country}}</el-descriptions-item>
               <el-descriptions-item label="账户名">{{dialogInfo.payment.accountName}}</el-descriptions-item>
               <el-descriptions-item label="账号">{{dialogInfo.payment.accountNo}}</el-descriptions-item>
               <el-descriptions-item label="SWIFT">{{dialogInfo.payment.swift}}</el-descriptions-item>
@@ -109,7 +109,7 @@
             <el-table-column :show-overflow-tooltip="true" prop="id" style="width:10px" label="订单id" />
             <el-table-column :show-overflow-tooltip="true" prop="studentFirstName,studentLastName" style="width:10px" label="学生姓名" > 
                 <template slot-scope="scope">
-                    {{scope.row.kyc.lastName}}{{scope.row.kyc.firstName}}  
+                    {{scope.row.data?.lastName}}{{scope.row.data?.firstName}}  
                 </template>
             </el-table-column>
             <el-table-column :show-overflow-tooltip="true" prop="amount,currency" label="汇款金额(外币)" >
@@ -160,7 +160,7 @@
     name: 'Order',
     components: { Treeselect, crudOperation, rrOperation, udOperation, pagination, DateRangePicker },
     cruds() {
-      return CRUD({ title: '订单', url: 'api/orders', crudMethod: { ...crudOrder }})
+      return CRUD({ title: '订单', url: 'api/orders', sort:['updateTime,desc'], crudMethod: { ...crudOrder }})
     },
     mixins: [presenter(), header(), form({}), crud()],
     data() {
@@ -180,6 +180,11 @@
           { key: 'true', display_name: '激活' },
           { key: 'false', display_name: '锁定' }
         ],
+        payerRelationShipMap: {
+          0 : "父子",
+          1 : "母子",
+          2 : "本人"
+        },
         stausMap : {
             0 : "完善信息",
             1 : "订单已确认",
