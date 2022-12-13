@@ -69,17 +69,25 @@
                             :value="item.value">
                         </el-option>
                     </el-select>
-                    <el-input v-model="gradientPrice.fixedAmount" style="width:30%;margin-left:2%;">
+                    <el-input v-model="gradientPrice.fixedAmount" style="width:25%;margin-left:2%;">
                         <em slot="suffix" style="margin:20px 10px 20px 16px; padding-left:10px;border-left:1px solid #C4C4C4">
                             {{"CNY"}} 
                         </em>
                     </el-input>
                     <span style="margin:0px 5%;">{{","}}</span>
-                    <el-input v-model="gradientPrice.amount" style="width:30%">
-                        <em slot="suffix" style="margin:20px 10px 20px 16px; padding-left:10px;border-left:1px solid #C4C4C4">
+                    <el-input v-model="gradientPrice.amount" style="width:15%">
+                        <!-- <em slot="suffix" style="margin:20px 10px 20px 16px; padding-left:10px;border-left:1px solid #C4C4C4">
                             {{"CNY"}} 
-                        </em>
+                        </em> -->
                     </el-input>
+                    <el-select v-model="gradientPrice.currency" style="width:20%">
+                          <el-option
+                              v-for="item in gradientType"
+                              :key="item"
+                              :label="item"
+                              :value="item">
+                          </el-option>
+                        </el-select>
                 </el-text>
                 <el-button type="primary" style="width :100%;margin-top: 10px;" round @click="clickAddGradientPrices(form)">添加</el-button>
                 <!-- </el-text> -->
@@ -224,6 +232,7 @@
         height: document.documentElement.clientHeight - 180 + 'px;',
         currencyDatas : [], serviceTypeDatas: [], // 多选时使用
         paymentTypeDatas: [],
+        gradientType :["CNY","%"],
         // 缴费类型 0-学费 1-生活费 2-保证金 3-保险 4-房租
         paymentTypeMap : {0 : "学费", 1 : "生活费", 2 : "保证金", 3 : "保险", 4 : "房租"},
         serviceTypeMap : {lessEqual : "<=",greater : ">"},
