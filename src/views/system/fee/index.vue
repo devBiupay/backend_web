@@ -209,7 +209,7 @@
 //     "point":5
 // }
   const defaultForm = { id: null, merchantNo: 'biupay', paymentTypes: null, spotFee: null, fullFee: null,gradientPrices:null }
-
+  var paymentTypeDatas = []; // 多选时使用
   var paymentTypeMap = {};
 
   export default {
@@ -223,6 +223,7 @@
       return {
         height: document.documentElement.clientHeight - 180 + 'px;',
         currencyDatas : [], serviceTypeDatas: [], // 多选时使用
+        paymentTypeDatas: [],
         // 缴费类型 0-学费 1-生活费 2-保证金 3-保险 4-房租
         paymentTypeMap : {0 : "学费", 1 : "生活费", 2 : "保证金", 3 : "保险", 4 : "房租"},
         serviceTypeMap : {lessEqual : "<=",greater : ">"},
@@ -292,6 +293,7 @@
             this.crud.toQuery();
         },
       changePaymentType(value) {
+        console.log(value);
         paymentTypeDatas = []
         value.forEach(function(data, index) {
             paymentTypeDatas.push(data);
@@ -306,6 +308,9 @@
       },
       clickAddGradientPrices(form) {
         console.log(form)
+        if (!form.gradientPrices) {
+          form.gradientPrices = []
+        }
         form.gradientPrices.push({
             amount:0,
             currency:"CNY",
@@ -337,6 +342,7 @@
       },
       // 提交前做的操作
       [CRUD.HOOK.afterValidateCU](crud) {
+        this.form.paymentTypes = this.paymentTypeDatas;
         return true
       },
       

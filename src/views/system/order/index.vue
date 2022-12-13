@@ -60,8 +60,23 @@
             <!-- 增删改查用户 -->
             <crudOperation show="" :permission="permission" />
           </div>
+          <el-dialog :visible.sync="updateOrderDialog" title="修改订单状态">
+            <!-- <el-input placeholder="请输入内容"  class="input-with-select"> -->
+                <el-select style="width: 100%;" v-model="updateStatus" placeholder="请输入修改的状态">                  
+                    <el-option v-for="(value,key,index) in stausMap" :key="index" :label="value" :value="key"></el-option>
+                </el-select>
+            <!-- </el-input> -->
+            <div slot="footer" class="dialog-footer">
+              <el-button type="text" @click="cancelUpdateOrderStatus()">取消</el-button>
+              <el-button type="primary" @click="submitUpdateOrderStatus(dialogInfo)">确认</el-button>
+            </div>
+          </el-dialog>
+
           <!--表单渲染-->
           <el-dialog :visible.sync="dialog" title="订单详情" append-to-body width="85%" style="padding: 20px 20px 0px 20px;" >
+            <div style="text-align: right">
+                <el-button @click="updateOrderStatus(dialogInfo.id)" el-button>修改订单状态</el-button>
+            </div>
             <div class="lineOfDivision"></div>
             <el-descriptions title="订单基本信息" bordered>
               <el-descriptions-item label="订单编号">{{dialogInfo.id}}</el-descriptions-item>
@@ -77,17 +92,17 @@
             <!-- 分割线 -->
             <div class="lineOfDivision"></div>
             <el-descriptions title="学生基本信息" bordered>
-              <el-descriptions-item label="学生姓名">{{dialogInfo.kyc.lastName}}{{dialogInfo.kyc.firstName}}</el-descriptions-item>
-              <el-descriptions-item label="学生电话">{{dialogInfo.kyc.phone}}</el-descriptions-item>
-              <el-descriptions-item label="身份证号">{{dialogInfo.kyc.idNumber}}</el-descriptions-item>
+              <el-descriptions-item label="学生姓名">{{dialogInfo.kyc?.lastName}}{{dialogInfo.kyc?.firstName}}</el-descriptions-item>
+              <el-descriptions-item label="学生电话">{{dialogInfo.kyc?.phone}}</el-descriptions-item>
+              <el-descriptions-item label="身份证号">{{dialogInfo.kyc?.idNumber}}</el-descriptions-item>
               <!-- TODO:证件照片 -->
             </el-descriptions>
             <!-- 分割线 -->
             <div class="lineOfDivision"></div>
             <el-descriptions title="汇款人信息" bordered>
-              <el-descriptions-item label="实际付款人">{{dialogInfo.kyc.payerLastName}}{{dialogInfo.kyc.payerFirstName}}</el-descriptions-item>
-              <el-descriptions-item label="汇款人关系">{{this.payerRelationShipMap[dialogInfo.kyc.payerRelationShip]}}</el-descriptions-item>
-              <el-descriptions-item label="身份证号">{{dialogInfo.kyc.payerIdNumber}}</el-descriptions-item>
+              <el-descriptions-item label="实际付款人">{{dialogInfo.kyc?.payerLastName}}{{dialogInfo.kyc?.payerFirstName}}</el-descriptions-item>
+              <el-descriptions-item label="汇款人关系">{{this.payerRelationShipMap[dialogInfo.kyc?.payerRelationShip]}}</el-descriptions-item>
+              <el-descriptions-item label="身份证号">{{dialogInfo.kyc?.payerIdNumber}}</el-descriptions-item>
               <!-- TODO:证件照片 -->
             </el-descriptions>
             <div class="lineOfDivision"></div>
@@ -167,6 +182,10 @@
       return {
         height: document.documentElement.clientHeight - 180 + 'px;',
         dialog : false,
+        updateOrderDialog : false,
+        updateStatusLoading : false,
+        updateOrderId : '',
+        updateStatus : '',
         dialogInfo : {kyc:{},payment:{}},
         deptName: '', depts: [], deptDatas: [], jobs: [], level: 3, roles: [],
         jobDatas: [], roleDatas: [], // 多选时使用
@@ -250,6 +269,25 @@
       info(data) {
         this.dialog = true;
         this.dialogInfo = data;
+      },
+      updateOrderStatus(id) {
+        this.updateOrderDialog = true;
+        this.updateOrderId = id;
+        this.updateStatus = '';
+      },
+      cancelUpdateOrderStatus() {
+        this.updateOrderDialog = false;
+        this.updateOrderId = '';
+        this.updateStatus = '';
+      },
+      submitUpdateOrderStatus(dialogInfo) {
+        this.updateStatusLoading = true;
+        let data = dialogInfo;
+        data.status = this.updateStatus;
+        crudOrder.edit(data)
+        this.updateStatusLoading = false;
+        this.updateOrderDialog = false;
+
       },
       // 监听筛选项的变化
         filterChange(filterObj) {
