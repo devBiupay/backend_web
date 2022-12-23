@@ -192,7 +192,11 @@
         // 缴费选项
         paymentTypeList : [],
         // 币种选项
-        currenciesList : [{text:"USD",value:"USD"},{text:"EUR",value:"EUR"},{text:"GBP",value:"GBP"}],
+        // AUD、CAD、CHF、EUR、GBP、HKD、JPY、KRW、NZD、SGD、SW、USD
+        currenciesList : [{text:"USD",value:"USD"},{text:"EUR",value:"EUR"},{text:"GBP",value:"GBP"},
+        {text:"AUD",value:"AUD"},{text:"CAD",value:"CAD"},{text:"CHF",value:"CHF"},
+        {text:"HKD",value:"HKD"},{text:"JPY",value:"JPY"},{text:"KRW",value:"KRW"},{text:"NZD",value:"NZD"},
+        {text:"SGD",value:"SGD"},{text:"SW",value:"SW"}],
         sourcePriceTypList : [],
         permission: {
           add: ['admin', 'rate:add'],

@@ -71,9 +71,13 @@
               <el-button type="primary" @click="submitUpdateOrderStatus(dialogInfo)">确认</el-button>
             </div>
           </el-dialog>
+          <el-dialog :visible.sync="dialogVisible">
+            <button @click="handleDownloadUrl(dialogImageUrl)">下载</button>
+            <img width="100%" :src="dialogImageUrl">
+          </el-dialog>
 
           <!--表单渲染-->
-          <el-dialog :visible.sync="dialog" title="订单详情" append-to-body width="85%" style="padding: 20px 20px 0px 20px;" >
+          <el-dialog :visible.sync="dialog" title="订单详情" append-to-body width="85%" style="padding: 20px 20px 0px 20px;z-index: 2000;" >
             <div style="text-align: right">
                 <el-button @click="updateOrderStatus(dialogInfo.id)" el-button>修改订单状态</el-button>
             </div>
@@ -88,6 +92,7 @@
               <el-descriptions-item label="足额到账费">{{dialogInfo.fullFee}}</el-descriptions-item>
               <el-descriptions-item label="手续费">{{dialogInfo.cnyFee}}</el-descriptions-item>
               <el-descriptions-item label="需支付金额">{{dialogInfo.cnyAmount}}{{" CNY"}}</el-descriptions-item>
+              <el-descriptions-item label="缴费类型">{{paymentTypeMap[dialogInfo.paymentType]}}</el-descriptions-item>
             </el-descriptions>
             <!-- 分割线 -->
             <div class="lineOfDivision"></div>
@@ -97,6 +102,15 @@
               <el-descriptions-item label="身份证号">{{dialogInfo.kyc?.idNumber}}</el-descriptions-item>
               <!-- TODO:证件照片 -->
             </el-descriptions>
+            <div style="display:flex;flex-flow:row">
+              <template  v-for="url in certificateInfo(dialogInfo.kyc?.certificates)">
+                <div style="display:flex;flex-flow: column;padding:10px">
+                  <iframe ref="ifr" style="width: 100px;height: 100px;" v-if="url.indexOf('.pdf') > -1" :src = "url" />
+                  <img style="width: 100px;height: 100px;" v-else :src = "url" />
+                  <button style="color:#3d3d3d"  @click="imageVisible(url)">查看图片</button>
+                </div>
+              </template>
+            </div>
             <!-- 分割线 -->
             <div class="lineOfDivision"></div>
             <el-descriptions title="汇款人信息" bordered>
@@ -105,14 +119,23 @@
               <el-descriptions-item label="身份证号">{{dialogInfo.kyc?.payerIdNumber}}</el-descriptions-item>
               <!-- TODO:证件照片 -->
             </el-descriptions>
+            <div style="display:flex;flex-flow:row">
+              <template  v-for="url in certificateInfo(dialogInfo.kyc?.payerCertificates)">
+                <div style="display:flex;flex-flow: column;padding:10px">
+                  <iframe ref="ifr" style="width: 100px;height: 100px;" v-if="url.indexOf('.pdf') > -1" :src = "url" />
+                  <img style="width: 100px;height: 100px;" v-else :src = "url" />
+                  <button style="color:#3d3d3d"  @click="imageVisible(url)">查看图片</button>
+                </div>
+              </template>
+            </div>
             <div class="lineOfDivision"></div>
             <el-descriptions title="收款账户信息" bordered>
               <el-descriptions-item label="收款国家">{{dialogInfo.resource?.country}}</el-descriptions-item>
-              <el-descriptions-item label="账户名">{{dialogInfo.payment.accountName}}</el-descriptions-item>
-              <el-descriptions-item label="账号">{{dialogInfo.payment.accountNo}}</el-descriptions-item>
-              <el-descriptions-item label="SWIFT">{{dialogInfo.payment.swift}}</el-descriptions-item>
-              <el-descriptions-item label="收款银行">{{dialogInfo.payment.bankName}}</el-descriptions-item>
-              <el-descriptions-item label="银行地址">{{dialogInfo.payment.bankAddress}}</el-descriptions-item>
+              <el-descriptions-item label="账户名">{{dialogInfo.payment?.accountName}}</el-descriptions-item>
+              <el-descriptions-item label="账号">{{dialogInfo.payment?.accountNo}}</el-descriptions-item>
+              <el-descriptions-item label="SWIFT">{{dialogInfo.payment?.swift}}</el-descriptions-item>
+              <el-descriptions-item label="收款银行">{{dialogInfo.payment?.bankName}}</el-descriptions-item>
+              <el-descriptions-item label="银行地址">{{dialogInfo.payment?.bankAddress}}</el-descriptions-item>
               <el-descriptions-item label="附言">{{dialogInfo.reference}}</el-descriptions-item>
             </el-descriptions>
           </el-dialog>
@@ -122,9 +145,9 @@
           <el-table ref="table" @filter-change="filterChange" v-loading="crud.loading" :data="crud.data" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
             <el-table-column :selectable="checkboxT" type="selection" width="55" />
             <el-table-column :show-overflow-tooltip="true" prop="id" style="width:10px" label="订单id" />
-            <el-table-column :show-overflow-tooltip="true" prop="studentFirstName,studentLastName" style="width:10px" label="学生姓名" > 
+            <el-table-column :show-overflow-tooltip="true" style="width:10px" label="学生姓名" > 
                 <template slot-scope="scope">
-                    {{scope.row.data?.lastName}}{{scope.row.data?.firstName}}  
+                    {{scope.row.kyc?.lastName}}{{scope.row.kyc?.firstName}}  
                 </template>
             </el-table-column>
             <el-table-column :show-overflow-tooltip="true" prop="amount,currency" label="汇款金额(外币)" >
@@ -135,6 +158,11 @@
             <el-table-column :show-overflow-tooltip="true" prop="rate" label="汇率" />
             <el-table-column :show-overflow-tooltip="true" prop="cnyFee" label="手续费(CNY)" />
             <el-table-column :show-overflow-tooltip="true" prop="cnyAmount" label="支付金额(CNY)" />
+            <el-table-column :show-overflow-tooltip="true" column-key="paymentTypeFilter" :filters="getPaymentTypeList()" prop="status" label="缴费类型" >
+                <template slot-scope="scope">
+                    {{paymentTypeMap[scope.row.paymentType]}}
+                </template>
+            </el-table-column>
             <el-table-column :show-overflow-tooltip="true" column-key="statusFilter" :filters="getStatusList()" prop="status" label="订单状态" >
                 <template slot-scope="scope">
                     {{stausMap[scope.row.status]}}
@@ -164,6 +192,7 @@
   import udOperation from '@crud/UD.operation'
   import pagination from '@crud/Pagination'
   import DateRangePicker from '@/components/DateRangePicker'
+  import viewImage from '@/components/ViewImage/index'
   import Treeselect from '@riophae/vue-treeselect'
   import { mapGetters } from 'vuex'
   import '@riophae/vue-treeselect/dist/vue-treeselect.css'
@@ -173,7 +202,7 @@
   
   export default {
     name: 'Order',
-    components: { Treeselect, crudOperation, rrOperation, udOperation, pagination, DateRangePicker },
+    components: { viewImage,Treeselect, crudOperation, rrOperation, udOperation, pagination, DateRangePicker },
     cruds() {
       return CRUD({ title: '订单', url: 'api/orders', sort:['updateTime,desc'], crudMethod: { ...crudOrder }})
     },
@@ -186,6 +215,8 @@
         updateStatusLoading : false,
         updateOrderId : '',
         updateStatus : '',
+        dialogVisible : false,
+        dialogImageUrl : '',
         dialogInfo : {kyc:{},payment:{}},
         deptName: '', depts: [], deptDatas: [], jobs: [], level: 3, roles: [],
         jobDatas: [], roleDatas: [], // 多选时使用
@@ -199,6 +230,7 @@
           { key: 'true', display_name: '激活' },
           { key: 'false', display_name: '锁定' }
         ],
+        paymentTypeMap : {0 : "学费", 1 : "生活费", 2 : "保证金", 3 : "保险", 4 : "房租"},
         payerRelationShipMap: {
           0 : "父子",
           1 : "母子",
@@ -255,6 +287,48 @@
       },
       getJobs() {},
 
+      handleDownloadUrl(url) {
+        window.open(url)
+      },
+
+      imageVisible(url) {
+        if (url.indexOf(".pdf") > -1) {
+          this.handleDownloadUrl(url)
+        } else {
+          this.dialogVisible = true;
+          this.dialogImageUrl = url
+        }
+      },
+
+      certificateInfo(certificates) {
+        let urlList = []
+        if (!certificates) {
+          return urlList;
+        }
+        certificates.forEach(function(certificate, index) {
+    
+          if (certificate.fontFileUrl) {
+            urlList.push(certificate.fontFileUrl)
+          }
+          if (certificate.backFileUrl) {
+              urlList.push(certificate.backFileUrl)
+          }
+          if (certificate.handFileUrl) {
+              urlList.push(certificate.handFileUrl)
+          }
+        })
+        console.log(urlList);
+        return urlList;
+      },
+
+      getPaymentTypeList() {
+        const paymentTypeList = []
+        for (var key in this.paymentTypeMap) {
+          paymentTypeList.push({text:this.paymentTypeMap[key],value:key})
+        } 
+        return paymentTypeList;
+      },
+
       getStatusList() {
         const statusList = []
         for (var key in this.stausMap) {
@@ -291,8 +365,12 @@
       },
       // 监听筛选项的变化
         filterChange(filterObj) {
-          console.log(filterObj.statusFilter.toString());
+          if (filterObj.statusFilter) {
             this.query.status = filterObj.statusFilter.toString();
+          }
+          if (filterObj.paymentTypeFilter) {
+            this.query.paymentType = filterObj.paymentTypeFilter.toString();
+          }
             this.crud.toQuery();
         },
       changeRole(value) {
