@@ -121,7 +121,7 @@
             <el-table-column :show-overflow-tooltip="true" prop="nowPrice" label="当前价格" />
             <el-table-column :show-overflow-tooltip="true" prop="createTime" width="135px" label="创建日期" />
             <el-table-column
-              v-if="checkPer(['admin','rate:edit','rate:del'])"
+              v-if="checkPer(['admin','rate:add','rate:edit','rate:del'])"
               label="操作"
               width="115"
               align="center"

@@ -84,9 +84,11 @@
             <div class="lineOfDivision"></div>
             <el-descriptions title="订单基本信息" bordered>
               <el-descriptions-item label="订单编号">{{dialogInfo.id}}</el-descriptions-item>
-              <el-descriptions-item label="收款渠道编号">{{dialogInfo.zlOrder}}</el-descriptions-item>
-              <el-descriptions-item label="订单状态">{{stausMap[dialogInfo.status]}}</el-descriptions-item>
+              <el-descriptions-item label="收款渠道编号">{{dialogInfo.depositId}}</el-descriptions-item>
+              <el-descriptions-item label="收款渠道">{{dialogInfo.depositChannel}}</el-descriptions-item>
               <el-descriptions-item label="汇款金额">{{dialogInfo.amount}} {{dialogInfo.currency}}</el-descriptions-item>
+              <el-descriptions-item label="订单截止时间">{{dialogInfo.deadLineDate}}</el-descriptions-item>
+              <el-descriptions-item label="订单状态">{{stausMap[dialogInfo.status]}}</el-descriptions-item>
               <el-descriptions-item label="订单汇率">{{dialogInfo.rate}}</el-descriptions-item>
               <el-descriptions-item label="电汇费">{{dialogInfo.spotFee}}</el-descriptions-item>
               <el-descriptions-item label="足额到账费">{{dialogInfo.fullFee}}</el-descriptions-item>
@@ -130,7 +132,7 @@
             </div>
             <div class="lineOfDivision"></div>
             <el-descriptions title="收款账户信息" bordered>
-              <el-descriptions-item label="收款国家">{{dialogInfo.resource?.country}}</el-descriptions-item>
+              <el-descriptions-item label="收款国家">{{dialogInfo.payment?.country}}</el-descriptions-item>
               <el-descriptions-item label="账户名">{{dialogInfo.payment?.accountName}}</el-descriptions-item>
               <el-descriptions-item label="账号">{{dialogInfo.payment?.accountNo}}</el-descriptions-item>
               <el-descriptions-item label="SWIFT">{{dialogInfo.payment?.swift}}</el-descriptions-item>
