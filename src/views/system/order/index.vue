@@ -60,6 +60,7 @@
             <!-- 增删改查用户 -->
             <crudOperation show="" :permission="permission" />
           </div>
+      
           <el-dialog :visible.sync="updateOrderDialog" title="修改订单状态">
             <!-- <el-input placeholder="请输入内容"  class="input-with-select"> -->
                 <el-select style="width: 100%;" v-model="updateStatus" placeholder="请输入修改的状态">                  
@@ -79,7 +80,13 @@
           <!--表单渲染-->
           <el-dialog :visible.sync="dialog" title="订单详情" append-to-body width="85%" style="padding: 20px 20px 0px 20px;z-index: 2000;" >
             <div style="text-align: right">
+                <el-button @click="edit(dialogInfo)" el-button>更新订单信息</el-button>
+            </div>
+            <div style="text-align: right">
                 <el-button @click="updateOrderStatus(dialogInfo.id)" el-button>修改订单状态</el-button>
+            </div>
+            <div style="text-align: right">
+                <el-button @click="transfer(dialogInfo)" el-button>订单下发</el-button>
             </div>
             <div class="lineOfDivision"></div>
             <el-descriptions title="订单基本信息" bordered>
@@ -115,12 +122,41 @@
             </div>
             <!-- 分割线 -->
             <div class="lineOfDivision"></div>
+            <!-- <el-form ref="dialogInfo" :inline="true" :model="dialogInfo" :rules="rules" size="small" label-width="80px">
+              <el-form-item label="实际付款人姓(拼音)">
+               <el-input v-model="dialogInfo.kyc?.payerLastNamePinyin" @keydown.native="keydown($event)" />
+              </el-form-item>
+            </el-form> -->
+
             <el-descriptions title="汇款人信息" bordered>
               <el-descriptions-item label="实际付款人">{{dialogInfo.kyc?.payerLastName}}{{dialogInfo.kyc?.payerFirstName}}</el-descriptions-item>
               <el-descriptions-item label="汇款人关系">{{this.payerRelationShipMap[dialogInfo.kyc?.payerRelationShip]}}</el-descriptions-item>
               <el-descriptions-item label="身份证号">{{dialogInfo.kyc?.payerIdNumber}}</el-descriptions-item>
+              <!-- <el-descriptions-item label="实际付款人姓(拼音)">{{dialogInfo.kyc?.payerLastNamePinyin}}</el-descriptions-item>
+              <el-descriptions-item label="实际付款人名(拼音)">{{dialogInfo.kyc?.payerFirstNamePinyin}}</el-descriptions-item>
+              <el-descriptions-item label="实际付款人生日">{{dialogInfo.kyc?.payerBirthdate}}</el-descriptions-item> -->
               <!-- TODO:证件照片 -->
             </el-descriptions>
+            <div v-if="isKyc(dialogInfo) && dialogInfo.paymentType == 1" class="demo-input-suffix" style="display: flex;flex-direction: row;">
+              <span style="display: flex;flex-direction: row;">
+                实际付款人姓(拼音):
+                <el-input
+                  v-model="dialogInfo.kyc.payerLastNamePinyin">
+                </el-input>
+              </span>
+              <span style="display: flex;flex-direction: row;">
+                实际付款人名(拼音):
+                <el-input
+                  v-model="dialogInfo.kyc.payerFirstNamePinyin">
+                </el-input>
+              </span>
+              <span style="display: flex;flex-direction: row;">
+                实际付款人邮编:
+                <el-input
+                  v-model="dialogInfo.kyc.payerPostCode">
+                </el-input>
+              </span>
+            </div>
             <div style="display:flex;flex-flow:row">
               <template  v-for="url in certificateInfo(dialogInfo.kyc?.payerCertificates)">
                 <div style="display:flex;flex-flow: column;padding:10px">
@@ -293,6 +329,10 @@
         window.open(url)
       },
 
+      isKyc(dialogInfo) {
+        return JSON.stringify(dialogInfo.kyc) != undefined && JSON.stringify(dialogInfo.kyc) !="{}"
+      },
+
       imageVisible(url) {
         if (url.indexOf(".pdf") > -1) {
           this.handleDownloadUrl(url)
@@ -319,7 +359,6 @@
               urlList.push(certificate.handFileUrl)
           }
         })
-        console.log(urlList);
         return urlList;
       },
 
@@ -355,6 +394,12 @@
         this.updateOrderDialog = false;
         this.updateOrderId = '';
         this.updateStatus = '';
+      },
+      edit(dialogInfo) {
+        crudOrder.edit(dialogInfo)
+      },
+      transfer(dialogInfo) {
+        crudOrder.transfer(dialogInfo)
       },
       submitUpdateOrderStatus(dialogInfo) {
         this.updateStatusLoading = true;

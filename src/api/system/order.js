@@ -33,5 +33,14 @@ export function updateStatus(data) {
 }
 
 
-export default { add, edit, del, updateStatus}
+export function transfer(data) {
+  return request({
+    url: 'api/orders/transfer',
+    method: 'post',
+    data
+  })
+}
+
+
+export default { add, edit, del, updateStatus,transfer}
 
