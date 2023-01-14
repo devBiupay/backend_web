@@ -79,23 +79,16 @@
 
           <!--表单渲染-->
           <el-dialog :visible.sync="dialog" title="订单详情" append-to-body width="85%" style="padding: 20px 20px 0px 20px;z-index: 2000;" >
-            <div style="text-align: right">
-                <el-button @click="edit(dialogInfo)" el-button>更新订单信息</el-button>
-            </div>
-            <div style="text-align: right">
-                <el-button @click="updateOrderStatus(dialogInfo.id)" el-button>修改订单状态</el-button>
-            </div>
-            <div style="text-align: right">
-                <el-button @click="transfer(dialogInfo)" el-button>订单下发</el-button>
-            </div>
             <div class="lineOfDivision"></div>
             <el-descriptions title="订单基本信息" bordered>
               <el-descriptions-item label="订单编号">{{dialogInfo.id}}</el-descriptions-item>
               <el-descriptions-item label="收款渠道编号">{{dialogInfo.depositId}}</el-descriptions-item>
               <el-descriptions-item label="收款渠道">{{dialogInfo.depositChannel}}</el-descriptions-item>
+              <el-descriptions-item label="下发渠道编号">{{dialogInfo.transferId}}</el-descriptions-item>
+              <el-descriptions-item label="下发渠道">{{dialogInfo.transferChannel}}</el-descriptions-item>
+              <el-descriptions-item label="订单状态">{{stausMap[dialogInfo.status]}}</el-descriptions-item>
               <el-descriptions-item label="汇款金额">{{dialogInfo.amount}} {{dialogInfo.currency}}</el-descriptions-item>
               <el-descriptions-item label="订单截止时间">{{dialogInfo.deadLineDate}}</el-descriptions-item>
-              <el-descriptions-item label="订单状态">{{stausMap[dialogInfo.status]}}</el-descriptions-item>
               <el-descriptions-item label="订单汇率">{{dialogInfo.rate}}</el-descriptions-item>
               <el-descriptions-item label="电汇费">{{dialogInfo.spotFee}}</el-descriptions-item>
               <el-descriptions-item label="足额到账费">{{dialogInfo.fullFee}}</el-descriptions-item>
@@ -176,6 +169,11 @@
               <el-descriptions-item label="银行地址">{{dialogInfo.payment?.bankAddress}}</el-descriptions-item>
               <el-descriptions-item label="附言">{{dialogInfo.reference}}</el-descriptions-item>
             </el-descriptions>
+            <div style="text-align: right;">
+              <el-button @click="edit(dialogInfo)" el-button>更新订单信息</el-button>
+              <el-button @click="updateOrderStatus(dialogInfo.id)" el-button>修改订单状态</el-button>
+              <el-button @click="transfer(dialogInfo)" el-button>订单下发</el-button>
+            </div>
           </el-dialog>
 
 
@@ -396,16 +394,23 @@
         this.updateStatus = '';
       },
       edit(dialogInfo) {
-        crudOrder.edit(dialogInfo)
+        crudOrder.edit(dialogInfo).then((d) => {
+          this.dialogInfo = d;
+        })
       },
       transfer(dialogInfo) {
-        crudOrder.transfer(dialogInfo)
+        crudOrder.transfer(dialogInfo).then((d) => {
+          this.dialogInfo = d;
+        })
       },
       submitUpdateOrderStatus(dialogInfo) {
         this.updateStatusLoading = true;
         let data = dialogInfo;
         data.status = this.updateStatus;
-        crudOrder.edit(data)
+        console.log(1111)
+        crudOrder.edit(data).then((d) => {
+          dialogInfo = d;
+        })
         this.updateStatusLoading = false;
         this.updateOrderDialog = false;
 
