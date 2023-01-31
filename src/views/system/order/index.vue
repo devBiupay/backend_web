@@ -172,7 +172,6 @@
               <el-descriptions-item label="下发币种">{{dialogInfo.transferInfo?.currency}}</el-descriptions-item>
               <el-descriptions-item label="下发外币金额">{{dialogInfo.transferInfo?.amount}}</el-descriptions-item>
               <el-descriptions-item label="下发人民金额">{{dialogInfo.transferInfo?.cnyAmount}}</el-descriptions-item>
-              <el-descriptions-item label="下发人民金额">{{preTransferLoading}}</el-descriptions-item>
 
             </el-descriptions>
             <div style="text-align: right;">
