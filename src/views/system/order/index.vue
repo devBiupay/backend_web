@@ -168,11 +168,18 @@
               <el-descriptions-item label="收款银行">{{dialogInfo.payment?.bankName}}</el-descriptions-item>
               <el-descriptions-item label="银行地址">{{dialogInfo.payment?.bankAddress}}</el-descriptions-item>
               <el-descriptions-item label="附言">{{dialogInfo.reference}}</el-descriptions-item>
+              <el-descriptions-item label="下发汇率">{{dialogInfo.transferInfo?.rate}}</el-descriptions-item>
+              <el-descriptions-item label="下发币种">{{dialogInfo.transferInfo?.currency}}</el-descriptions-item>
+              <el-descriptions-item label="下发外币金额">{{dialogInfo.transferInfo?.amount}}</el-descriptions-item>
+              <el-descriptions-item label="下发人民金额">{{dialogInfo.transferInfo?.cnyAmount}}</el-descriptions-item>
+              <el-descriptions-item label="下发人民金额">{{preTransferLoading}}</el-descriptions-item>
+
             </el-descriptions>
             <div style="text-align: right;">
-              <el-button @click="edit(dialogInfo)" el-button>更新订单信息</el-button>
-              <el-button @click="updateOrderStatus(dialogInfo.id)" el-button>修改订单状态</el-button>
-              <el-button @click="transfer(dialogInfo)" el-button>订单下发</el-button>
+              <el-button :loading="preTransferLoading" type="primary" @click="preTransfer(dialogInfo)">重新预下单</el-button>
+              <el-button :loading="editLoading" type="primary" @click="edit(dialogInfo)" el-button>更新订单信息</el-button>
+              <el-button :loading="updateStatusLoading" type="primary" @click="updateOrderStatus(dialogInfo.id)" el-button>修改订单状态</el-button>
+              <el-button :loading="transferLoading" type="primary" @click="transfer(dialogInfo)" el-button>订单下发</el-button>
             </div>
           </el-dialog>
 
@@ -249,11 +256,14 @@
         dialog : false,
         updateOrderDialog : false,
         updateStatusLoading : false,
+        preTransferLoading : false,
+        editLoading : false,
+        transferLoading : false,
         updateOrderId : '',
         updateStatus : '',
         dialogVisible : false,
         dialogImageUrl : '',
-        dialogInfo : {kyc:{},payment:{}},
+        dialogInfo : {kyc:{},payment:{},preTransferLoading:true},
         deptName: '', depts: [], deptDatas: [], jobs: [], level: 3, roles: [],
         jobDatas: [], roleDatas: [], // 多选时使用
         defaultProps: { children: 'children', label: 'name', isLeaf: 'leaf' },
@@ -394,14 +404,33 @@
         this.updateStatus = '';
       },
       edit(dialogInfo) {
+        this.editLoading = true;
         crudOrder.edit(dialogInfo).then((d) => {
           this.dialogInfo = d;
-        })
+          this.editLoading = false;
+        }).catch(err => {
+            this.editLoading = false;
+          })
+      },
+      preTransfer(dialogInfo) {
+        this.preTransferLoading = true;
+        crudOrder.preTransfer(dialogInfo).then((d) => {
+          this.dialogInfo = d;
+          this.preTransferLoading = false;
+        }).catch(err => {
+            this.preTransferLoading = false;
+          })
+
       },
       transfer(dialogInfo) {
+        this.transferLoading = true;
         crudOrder.transfer(dialogInfo).then((d) => {
           this.dialogInfo = d;
-        })
+          this.transferLoading = false;
+        }).catch(err => {
+            this.transferLoading = false;
+          })
+
       },
       submitUpdateOrderStatus(dialogInfo) {
         this.updateStatusLoading = true;
@@ -410,9 +439,12 @@
         console.log(1111)
         crudOrder.edit(data).then((d) => {
           dialogInfo = d;
-        })
-        this.updateStatusLoading = false;
-        this.updateOrderDialog = false;
+          this.updateStatusLoading = false;
+          this.updateOrderDialog = false;
+        }).catch(err => {
+          this.updateStatusLoading = false;
+          this.updateOrderDialog = false;
+          })
 
       },
       // 监听筛选项的变化

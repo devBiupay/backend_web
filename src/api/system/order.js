@@ -41,6 +41,14 @@ export function transfer(data) {
   })
 }
 
+export function preTransfer(data) {
+  return request({
+    url: 'api/orders/preTransfer',
+    method: 'post',
+    data
+  })
+}
 
-export default { add, edit, del, updateStatus,transfer}
+
+export default { add, edit, del, updateStatus,transfer,preTransfer}
 
