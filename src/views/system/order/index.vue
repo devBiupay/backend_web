@@ -275,7 +275,7 @@
           { key: 'true', display_name: '激活' },
           { key: 'false', display_name: '锁定' }
         ],
-        paymentTypeMap : {0 : "学费", 1 : "生活费", 2 : "保证金", 3 : "保险", 4 : "房租"},
+        paymentTypeMap : {0 : "学费", 1 : "生活费", 2 : "保证金", 3 : "保险", 4 : "房租", 5: "医疗"},
         payerRelationShipMap: {
           0 : "父子",
           1 : "母子",
