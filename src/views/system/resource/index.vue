@@ -118,8 +118,8 @@
         paymentTypeList : [{value:0 ,text: "学费"},{value: 1 ,text: "生活费"},
                     {value: 2 ,text: "保证金"}, {value:3,text : "保险"},{value: 4 ,text : "房租"},{value: 5,text: "医疗"}],
 
-        countryList : [{text:'DE',value:'DE'},{text:'GBR',value:'GBR'},{text:"KO",value:'KO'}],
-        currencyList : [{text:'EUR',value:'EUR'},{text:'GBP',value:'GBP'},{text:"KRW",value:'KRW'},{text:"AUD",value:'AUD'}],
+        countryList : [{text:'DE',value:'DE'},{text:'GBR',value:'GBR'},{text:"KO",value:'KO'},{text:"MY",value:"MY"}],
+        currencyList : [{text:'EUR',value:'EUR'},{text:'GBP',value:'GBP'},{text:"KRW",value:'KRW'},{text:"AUD",value:'AUD'},{text:"MYR",value:"MYR"}],
         serviceTypeMap : {lessEqual : "<=",greater : ">"},
         permission: {
           add: ['admin', 'fee:add'],
