@@ -196,7 +196,7 @@
         currenciesList : [{text:"USD",value:"USD"},{text:"EUR",value:"EUR"},{text:"GBP",value:"GBP"},
         {text:"AUD",value:"AUD"},{text:"CAD",value:"CAD"},{text:"CHF",value:"CHF"},
         {text:"HKD",value:"HKD"},{text:"JPY",value:"JPY"},{text:"KRW",value:"KRW"},{text:"NZD",value:"NZD"},
-        {text:"SGD",value:"SGD"},{text:"SW",value:"SW"}],
+        {text:"SGD",value:"SGD"},{text:"SW",value:"SW"},{text:"MYR",value:"MYR"}],
         sourcePriceTypList : [],
         permission: {
           add: ['admin', 'rate:add'],
