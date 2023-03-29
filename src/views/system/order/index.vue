@@ -130,7 +130,7 @@
               <el-descriptions-item label="实际付款人生日">{{dialogInfo.kyc?.payerBirthdate}}</el-descriptions-item> -->
               <!-- TODO:证件照片 -->
             </el-descriptions>
-            <div v-if="isKyc(dialogInfo) && dialogInfo.paymentType == 1" class="demo-input-suffix" style="display: flex;flex-direction: row;">
+            <div v-if="isKyc(dialogInfo) && dialogInfo.transferChannel == 'nextpls'" class="demo-input-suffix" style="display: flex;flex-direction: row;">
               <span style="display: flex;flex-direction: row;">
                 实际付款人姓(拼音):
                 <el-input
