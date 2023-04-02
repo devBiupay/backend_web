@@ -165,6 +165,18 @@ function CRUD(options) {
       callVmHook(crud, CRUD.HOOK.afterToCU, crud.form)
     },
     /**
+     * 启动添加
+     */
+    toAddWithData(data) {
+      crud.resetForm(JSON.parse(JSON.stringify(data)))
+      if (!(callVmHook(crud, CRUD.HOOK.beforeToAdd, crud.form) && callVmHook(crud, CRUD.HOOK.beforeToCU, crud.form))) {
+        return
+      }
+      crud.status.add = CRUD.STATUS.PREPARED
+      callVmHook(crud, CRUD.HOOK.afterToAdd, crud.form)
+      callVmHook(crud, CRUD.HOOK.afterToCU, crud.form)
+    },
+    /**
      * 启动编辑
      * @param {*} data 数据项
      */
@@ -231,7 +243,6 @@ function CRUD(options) {
      * 提交新增/编辑
      */
     submitCU() {
-      console.log("crud :",crud.data);
       if (!callVmHook(crud, CRUD.HOOK.beforeValidateCU)) {
         return
       }
