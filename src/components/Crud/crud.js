@@ -169,6 +169,7 @@ function CRUD(options) {
      */
     toAddWithData(data) {
       crud.resetForm(JSON.parse(JSON.stringify(data)))
+      console.log(data)
       if (!(callVmHook(crud, CRUD.HOOK.beforeToAdd, crud.form) && callVmHook(crud, CRUD.HOOK.beforeToCU, crud.form))) {
         return
       }

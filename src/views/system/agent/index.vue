@@ -23,7 +23,7 @@
             <crudOperation show="" :permission="permission" />
           </div>
           <!--表单渲染-->
-        <el-dialog append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="570px">
+        <el-dialog append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="1020px">
             <el-form ref="form" :inline="true" :model="form" :rules="rules" label-width="20%">
             <el-descriptions title="商户配置" bordered></el-descriptions>
             <el-form-item label="商户名" prop="merchantNo" width="100%" >
@@ -504,7 +504,7 @@
         return true
       },
       submit(form) {
-        console.log(this.paymentTypeDatas)
+        console.log(form)
         this.submitLoading = true;
         const submitData = {
           id : form.id,
