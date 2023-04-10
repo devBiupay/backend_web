@@ -25,8 +25,15 @@
           <!--表单渲染-->
         <el-dialog append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="1020px">
             <el-form ref="form" :inline="true" :model="form" :rules="rules" label-width="20%">
+            <div v-if="form.agentId != form.id" style="margin-bottom: 20px;">
+              <el-descriptions title="机构配置" bordered></el-descriptions>
+              <el-tag>{{sourcePriceTypMap[form?.agentRate?.sourcePriceType] }}</el-tag>
+              <el-tag>{{priceTypeMap[form?.agentRate?.priceType]}}</el-tag>
+              <el-tag>{{form?.agentRate?.point }}</el-tag>
+            </div>
             <el-descriptions title="商户配置" bordered></el-descriptions>
-            <el-form-item label="商户名" prop="merchantNo" width="100%" >
+            <div style="display: flex;">
+              <el-form-item label="商户名" prop="merchantNo" width="100%" >
                <el-input v-model="form.merchantNo" @keydown.native="keydown($event)"/>
             </el-form-item>
             <el-form-item  label="业务类型" prop="paymentTypes">
@@ -46,7 +53,10 @@
                     />
                 </el-select>
             </el-form-item>
-            <el-form-item label="币种" prop="currencies">
+
+            </div>
+            <div style="display: flex; width: 100%;">
+              <el-form-item style="width:50%" label="币种" prop="currencies">
                 <el-select
                     v-model="currencyDatas"
                     style="width: 100%"
@@ -62,24 +72,39 @@
                     :value="item.text"
                     />
                 </el-select>
-            </el-form-item>
-            <el-descriptions title="手续费配置" bordered></el-descriptions>
-            <el-form-item label="电汇" prop="spotFee">
+              </el-form-item>
+              <el-form-item v-if="form.id != form.agentId" style="width:50%" label="国内机构" prop="organization" >
+                  <el-select v-model.organization="form.organization" :allow-create="true" @visible-change="getOrganization" filterable>
+                      <el-option 
+                          v-for="item in organizations"
+                          :key="item"
+                          :label="item"
+                          :value="item"
+                      />
+                  </el-select>
+              </el-form-item>
+            </div>
+            <el-descriptions v-if="form.id==form.agentId" title="手续费配置" bordered></el-descriptions>
+            <el-descriptions v-else title="手续费配置（基于中介）" bordered></el-descriptions>
+            <div style="display: flex;">
+              <el-form-item label="电汇" prop="spotFee">
                 <el-input v-model.spotFee="form.spotFee">
                     <em slot="suffix" style="margin:20px 10px 20px 16px; padding-left:10px;border-left:1px solid #C4C4C4">
                         {{"CNY"}} 
                     </em>
                 </el-input>
-            </el-form-item>
-            <el-form-item label="足额到账费" prop="fullFee">
-                <el-input v-model.fullFee="form.fullFee">
-                <em slot="suffix" style="margin:20px 10px 20px 16px; padding-left:10px;border-left:1px solid #C4C4C4">
-                    {{"CNY"}} 
-                </em>
-                </el-input>
-            </el-form-item>
+                </el-form-item>
+                <el-form-item label="足额到账费" prop="fullFee">
+                    <el-input v-model.fullFee="form.fullFee">
+                    <em slot="suffix" style="margin:20px 10px 20px 16px; padding-left:10px;border-left:1px solid #C4C4C4">
+                        {{"CNY"}} 
+                    </em>
+                    </el-input>
+                </el-form-item>
+            </div>
+            <div style="display: flex; width: 50%;">
             <el-form-item label="平台服务费" prop="gradientPrices">
-                <el-text v-for="gradientPrice in form.gradientPrices" :key="gradientPrice" style="padding-bottom:10px">
+                <el-text v-for="(gradientPrice,index) in form.gradientPrices" :key="gradientPrice" style="padding-bottom:10px">
                     <el-select v-model="gradientPrice.type" style="width:20%">
                         <el-option
                             v-for="item in serviceTypeList"
@@ -93,7 +118,7 @@
                             {{"CNY"}} 
                         </em>
                     </el-input>
-                    <span style="margin:0px 5%;">{{","}}</span>
+                    <span style="margin:0px 1%;">{{","}}</span>
                     <el-input v-model="gradientPrice.amount" style="width:15%">
                         <!-- <em slot="suffix" style="margin:20px 10px 20px 16px; padding-left:10px;border-left:1px solid #C4C4C4">
                             {{"CNY"}} 
@@ -106,70 +131,69 @@
                               :label="item"
                               :value="item">
                           </el-option>
-                        </el-select>
-                    </el-text>
+                    </el-select>
+                    <el-button style="width: 8%;" type="danger"  icon="el-icon-delete" circle @click="delGradientPrices(form,index)"></el-button>
+                    
+                  </el-text>
                 <el-button type="primary" style="width :100%;margin-top: 10px;" round @click="clickAddGradientPrices(form)">添加</el-button>
-                <!-- </el-text> -->
-                <!-- <el-select
-                    v-model="serviceTypeDatas"
-                    multiple
-                    style="width: 20%"
-                    placeholder="请选择"
-                    @remove-tag="deletePaymentTypeData"
-                    @change="changePaymentType"
-                >
-                    <el-option
-                        v-for="item in serviceTypeList"
-                        :key="item.text"
-                        :label="item.text"
-                        :value="item.value"
-                        />
-                </el-select> -->
+            </el-form-item>
+            </div>
 
-            </el-form-item>
-            <el-descriptions title="汇率配置" bordered></el-descriptions>
-            <el-form-item label="汇率源" prop="sourcePriceType">
-                <el-select v-model.sourcePriceType="form.sourcePriceType">
-                    <el-option 
-                        v-for="item in sourcePriceTypList"
-                        :key="item.value"
-                        :label="item.text"
-                        :value="item.value"
-                    />
-                </el-select>
-                <!-- <el-input v-model.sourcePriceType="form.sourcePriceType" /> -->
-            </el-form-item>
-            <el-input placeholder="请输入内容" v-model="form.point" class="input-with-select">
-                <el-select style="width:100px" v-model="form.priceType" slot="prepend" placeholder="定价">                  
-                    <el-option v-for="(value,key,index) in priceTypeMap" :key="index" :label="value" :value="key"></el-option>
-                </el-select>
-            </el-input>
-            <el-descriptions style="margin-top: 30px;" title="分佣配置" bordered></el-descriptions>
-            <el-form-item label="固定手续费返佣" prop="fixCommissionAmount">
-                <el-input v-model.fixCommissionAmount="form.fixCommissionAmount">
-                <em slot="suffix" style="margin:20px 10px 20px 16px; padding-left:10px;border-left:1px solid #C4C4C4">
-                    {{"CNY"}} 
-                </em>
-                </el-input>
-            </el-form-item>
-            <el-form-item label="动态汇率返佣" prop="rateCommissionPoint">
-              <el-input placeholder="" v-model="form.rateCommissionPoint" class="input-with-select">
-                <el-select style="width:100px" v-model="form.rateCommissionType" slot="prepend" placeholder="定价">                  
-                    <el-option v-for="(value,key,index) in priceTypeMap" :key="index" :label="value" :value="key"></el-option>
-                </el-select>
+            <el-descriptions v-if="form.id == form.agentId"  title="汇率配置" bordered></el-descriptions>
+            <el-descriptions v-else title="汇率配置（基于中介）" bordered></el-descriptions>
+
+            <div v-if="form.agentId == form.id" style="display: flex;">
+              <el-form-item label="汇率源" prop="sourcePriceType">
+                  <el-select v-model.sourcePriceType="form.sourcePriceType">
+                      <el-option 
+                          v-for="item in sourcePriceTypList"
+                          :key="item.value"
+                          :label="item.text"
+                          :value="item.value"
+                      />
+                  </el-select>
+                  <!-- <el-input v-model.sourcePriceType="form.sourcePriceType" /> -->
+              </el-form-item>
+              <el-input placeholder="请输入内容" v-model="form.point" class="input-with-select">
+                  <el-select style="width:100px" v-model="form.priceType" slot="prepend" placeholder="定价">                  
+                      <el-option v-for="(value,key,index) in priceTypeMap" :key="index" :label="value" :value="key"></el-option>
+                  </el-select>
               </el-input>
-            </el-form-item>
-            <el-form-item label="汇差利润分配比率" prop="profitRate">
-                <el-input v-model.profitRate="form.profitRate">
-                <em slot="suffix" style="margin:20px 10px 20px 16px; padding-left:10px;border-left:1px solid #C4C4C4">
-                    {{"%"}} 
-                </em>
+            </div>
+            <div v-if="form.agentId != form.id" style="display: flex; width: 50%;">
+              <el-input placeholder="请输入内容" v-model="form.point" class="input-with-select">
+                  <el-select style="width:100px" v-model="form.priceType" slot="prepend" placeholder="定价">                  
+                      <el-option v-for="(value,key,index) in priceTypeMap" :key="index" :label="value" :value="key"></el-option>
+                  </el-select>
+              </el-input>
+            </div>
+
+            <el-descriptions style="margin-top: 30px;" title="分佣配置" bordered></el-descriptions>
+            <div style="display: flex;">
+              <el-form-item label="固定手续费返佣" prop="fixCommissionAmount">
+                  <el-input v-model.fixCommissionAmount="form.fixCommissionAmount">
+                  <em slot="suffix" style="margin:20px 10px 20px 16px; padding-left:10px;border-left:1px solid #C4C4C4">
+                      {{"CNY"}} 
+                  </em>
+                  </el-input>
+              </el-form-item>
+              <el-form-item label="动态汇率返佣" prop="rateCommissionPoint">
+                <el-input placeholder="" v-model="form.rateCommissionPoint" class="input-with-select">
+                  <el-select style="width:100px" v-model="form.rateCommissionType" slot="prepend" placeholder="定价">                  
+                      <el-option v-for="(value,key,index) in priceTypeMap" :key="index" :label="value" :value="key"></el-option>
+                  </el-select>
                 </el-input>
-            </el-form-item>
-            
-
-
-
+              </el-form-item>
+            </div>
+            <div v-if="form.id == form.agentId" style="display: flex; width: 50%;">
+              <el-form-item label="汇差利润分配比率" prop="profitRate">
+                  <el-input v-model.profitRate="form.profitRate">
+                  <em slot="suffix" style="margin:20px 10px 20px 16px; padding-left:10px;border-left:1px solid #C4C4C4">
+                      {{"%"}} 
+                  </em>
+                  </el-input>
+              </el-form-item>
+            </div>
 
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -251,7 +275,7 @@
                 <udOperation
                   :data="scope.row"
                   :permission="permission"
-                  :disabled-dle="scope.row.id === user.id"
+                  :disabled-dle="scope.row.id === scope.row.agentId"
                 />
                 <el-button v-if="scope.row.id === scope.row.agentId" size="mini" type="text" icon="el-icon-add" @click="crud.toAddWithData(initMerchantData(scope.row))"
                 >新增商户</el-button>
@@ -291,7 +315,8 @@
 //     "point":5
 // }
   const defaultForm = { id: null, merchantNo: '', paymentTypes: null, spotFee: null, fullFee: null,gradientPrices:null,
-          point:null,priceType:null,sourcePriceType:null ,fixCommissionAmount :null,rateCommissionPoint : null, rateCommissionType: null,profitRate : null }
+          point:null,priceType:null,sourcePriceType:null ,fixCommissionAmount :null,rateCommissionPoint : null, rateCommissionType: null,
+          profitRate : null ,organization:null,rate:{},fee:{}}
   var paymentTypeDatas = []; // 多选时使用
   var paymentTypeMap = {};
 
@@ -311,6 +336,7 @@
         currencyDatas : [], serviceTypeDatas: [], // 多选时使用
         paymentTypeDatas: [],
         paymentTypeList : [],
+        organizations:[],
 
         sourcePriceTypList :[],
         gradientType :["CNY","%"],
@@ -392,9 +418,15 @@
         }
         return list;
       },
+      getOrganization() {
+        if (!this.organizations.length) {
+          crudAgent.getOrganization().then(res => {
+            this.organizations = res;
+          })
+        }
+      },
       // 监听筛选项的变化
       filterChange(filterObj) {
-            console.log(filterObj.currenciesFilter);
             if (filterObj.paymentTypeFilter) {
                 this.query.paymentTypes = filterObj.paymentTypeFilter.toString();
             } 
@@ -421,7 +453,6 @@
         })
       },
       clickAddGradientPrices(form) {
-        console.log(form)
         if (!form.gradientPrices) {
           form.gradientPrices = []
         }
@@ -432,20 +463,16 @@
             type:"",
         })
       },
+      delGradientPrices(form,index) {
+        form.gradientPrices.splice(index,1);
+      },
       // 初始化商户信息
       initMerchantData(form) {
-        console.log("form")
-        console.log(form)
         const data = {
           id : "",
           agentId : form.id,
         }
         return data
-      },
-      isNodeHasClildren(node) {
-        console.log("node11")
-        console.log(node)
-        return 'agentId';
       },
       // 新增与编辑前做的操作
       [CRUD.HOOK.afterToCU](crud, form) {
@@ -457,8 +484,9 @@
       [CRUD.HOOK.beforeToAdd]() {
       },
       [CRUD.HOOK.afterSubmit] (crud,form) {
-        console.log("5555")
         this.merchantList[form.id] = form;
+      },
+      [CRUD.HOOK.afterEditCancel] (crud,form) {
       },
       [CRUD.HOOK.afterRefresh] (crud) {
         // console.log('4444')
@@ -478,7 +506,6 @@
         this.paymentTypeDatas = [];
         this.currencyDatas =[];
         const _this = this
-        console.log(form)
         form.rate.paymentTypes.forEach(function(paymentType, index) {
             _this.paymentTypeDatas.push(paymentType);
         });
@@ -496,20 +523,18 @@
         form.rateCommissionPoint = form.commission?.rateCommission?.point;
         form.rateCommissionType = form.commission?.rateCommission?.priceType;
         form.profitRate = form.commission?.profitRate * 100;
-        console.log("初始化")
-        console.log(form)
       },
       // 提交前做的操作
       [CRUD.HOOK.afterValidateCU](crud) {
         return true
       },
       submit(form) {
-        console.log(form)
         this.submitLoading = true;
         const submitData = {
           id : form.id,
           merchantNo : form.merchantNo,
-          agentId : form.agentId
+          agentId : form.agentId,
+          organization : form.organization
         }
 
         submitData.fee = {
@@ -529,6 +554,9 @@
           sourcePriceType : this.form.sourcePriceType,
           id : this.form.rate?.id,
         }
+        if (form.agentRate !=null) {
+          submitData.rate.sourcePriceType = form.agentRate.sourcePriceType;
+        }
         submitData.commission = {
           id : this.form.commission?.id,
           fixCommission : {
@@ -545,9 +573,7 @@
         }
         submitData.id = form.id;
         submitData.merchantNo = form.merchantNo;
-        console.log("111344")
         this.merchantList[form.id] = form;
-        console.log(this.merchantList[form.id])
 
         if (form.id == '') {
           crudAgent.add(submitData).then((d) => {
@@ -572,13 +598,17 @@
         return this[id];
       },
       crudMerchantNoList(tree, treeNode, resolve) {
-        console.log(tree.id)
-        console.log("444")
-
         setTimeout(() => {
           crudAgent.getMerchantList(tree.id).then(res => {
+            const resultList = [];
+            res.content.forEach(function(data, index) {
+              const result = data;
+              result.agentRate = tree.rate;
+              result.agentFee = tree.fee;
+              resultList.push(result);
+            })
 
-            resolve(res.content)
+            resolve(resultList)
           })
         }, 100)
       },

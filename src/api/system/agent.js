@@ -31,6 +31,13 @@ export function getMerchantList(id) {
   })
 }
 
+export function getOrganization() {
+  return request({
+    url: 'api/merchant/organization',
+    method: 'get'
+  })
+}
 
-export default { add, edit, del,getMerchantList }
+
+export default { add, edit, del,getMerchantList,getOrganization }
 
