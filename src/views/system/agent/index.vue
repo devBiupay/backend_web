@@ -26,10 +26,46 @@
         <el-dialog append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="1020px">
             <el-form ref="form" :inline="true" :model="form" :rules="rules" label-width="20%">
             <div v-if="form.agentId != form.id" style="margin-bottom: 20px;">
-              <el-descriptions title="机构配置" bordered></el-descriptions>
+              <el-descriptions title="代理人配置" bordered></el-descriptions>
               <el-tag>{{sourcePriceTypMap[form?.agentRate?.sourcePriceType] }}</el-tag>
               <el-tag>{{priceTypeMap[form?.agentRate?.priceType]}}</el-tag>
               <el-tag>{{form?.agentRate?.point }}</el-tag>
+              <div style="display:flex">
+              <el-descriptions style="width: 50%; margin-top: 20px;">
+                <el-descriptions-item label="足额到账费">{{form?.agentFee?.fullFee}}</el-descriptions-item>
+                <el-descriptions-item label="电汇费">{{form?.agentFee?.spotFee}}</el-descriptions-item>
+              </el-descriptions>
+              <el-form-item label="平台服务费" style="width: 50%;">
+                <el-text v-for="(gradientPrice,index) in form?.agentFee?.gradientPrices" :key="gradientPrice" style="width: 50%;">
+                    <el-select disabled v-model="gradientPrice.type" style="width:20%">
+                        <el-option
+                            v-for="item in serviceTypeList"
+                            :key="item.text"
+                            :label="item.text"
+                            :value="item.value">
+                        </el-option>
+                    </el-select>
+                    <el-input disabled v-model="gradientPrice.fixedAmount" style="width:25%;margin-left:2%;">
+                        <em slot="suffix" style="margin:20px 10px 20px 16px; padding-left:10px;border-left:1px solid #C4C4C4">
+                            {{"CNY"}} 
+                        </em>
+                    </el-input>
+                    <span style="margin:0px 1%;">{{","}}</span>
+                    <el-input disabled v-model="gradientPrice.amount" style="width:15%">
+                        <!-- <em slot="suffix" style="margin:20px 10px 20px 16px; padding-left:10px;border-left:1px solid #C4C4C4">
+                            {{"CNY"}} 
+                        </em> -->
+                    </el-input>
+                    <el-select disabled v-model="gradientPrice.currency" style="width:20%">
+                        <em slot="suffix" style="margin:20px 10px 20px 16px; padding-left:10px;border-left:1px solid #C4C4C4">
+                            {{gradientType}} 
+                        </em>
+                    </el-select>
+                    
+                  </el-text>
+                </el-form-item>
+              </div>
+
             </div>
             <el-descriptions title="商户配置" bordered></el-descriptions>
             <div style="display: flex;">
@@ -74,7 +110,7 @@
                 </el-select>
               </el-form-item>
               <el-form-item v-if="form.id != form.agentId" style="width:50%" label="国内机构" prop="organization" >
-                  <el-select v-model.organization="form.organization" :allow-create="true" @visible-change="getOrganization" filterable>
+                  <el-select v-model.organization="form.organization" :allow-create="true" @visible-change="getOrganization" filterable clearable>
                       <el-option 
                           v-for="item in organizations"
                           :key="item"
@@ -316,7 +352,7 @@
 // }
   const defaultForm = { id: null, merchantNo: '', paymentTypes: null, spotFee: null, fullFee: null,gradientPrices:null,
           point:null,priceType:null,sourcePriceType:null ,fixCommissionAmount :null,rateCommissionPoint : null, rateCommissionType: null,
-          profitRate : null ,organization:null,rate:{},fee:{}}
+          profitRate : null ,organization:null,rate:{},fee:{},commission:{}}
   var paymentTypeDatas = []; // 多选时使用
   var paymentTypeMap = {};
 
