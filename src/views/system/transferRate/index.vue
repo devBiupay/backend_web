@@ -26,7 +26,14 @@
         <el-dialog append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="570px">
             <el-form ref="form" :inline="true" :model="form" :rules="rules" size="small" label-width="80px">
             <el-form-item label="商户名" prop="merchantNo">
-               <el-input v-model="form.merchantNo" @keydown.native="keydown($event)" />
+              <el-select v-model="form.merchantNo" @keydown.native="keydown($event)" >
+                <el-option
+                  v-for="item in ['nextpls','sunray']"
+                    :key="item"
+                    :label="item"
+                    :value="item"
+                    />
+              </el-select>
             </el-form-item>
             <el-form-item  label="业务类型" prop="paymentTypes">
                 <el-select

@@ -27,7 +27,6 @@
             <el-form ref="form" :inline="true" :model="form" :rules="rules" label-width="20%">
             <div v-if="form.agentId != form.id" style="margin-bottom: 20px;">
               <el-descriptions title="代理人配置" bordered></el-descriptions>
-              <el-tag>{{sourcePriceTypMap[form?.agentRate?.sourcePriceType] }}</el-tag>
               <el-tag>{{priceTypeMap[form?.agentRate?.priceType]}}</el-tag>
               <el-tag>{{form?.agentRate?.point }}</el-tag>
               <div style="display:flex">
@@ -178,7 +177,7 @@
             <el-descriptions v-if="form.id == form.agentId"  title="汇率配置" bordered></el-descriptions>
             <el-descriptions v-else title="汇率配置（基于中介）" bordered></el-descriptions>
 
-            <div v-if="form.agentId == form.id" style="display: flex;">
+            <!-- <div v-if="form.agentId == form.id" style="display: flex;">
               <el-form-item label="汇率源" prop="sourcePriceType">
                   <el-select v-model.sourcePriceType="form.sourcePriceType">
                       <el-option 
@@ -188,15 +187,14 @@
                           :value="item.value"
                       />
                   </el-select>
-                  <!-- <el-input v-model.sourcePriceType="form.sourcePriceType" /> -->
               </el-form-item>
               <el-input placeholder="请输入内容" v-model="form.point" class="input-with-select">
                   <el-select style="width:100px" v-model="form.priceType" slot="prepend" placeholder="定价">                  
                       <el-option v-for="(value,key,index) in priceTypeMap" :key="index" :label="value" :value="key"></el-option>
                   </el-select>
               </el-input>
-            </div>
-            <div v-if="form.agentId != form.id" style="display: flex; width: 50%;">
+            </div> -->
+            <div style="display: flex; width: 50%;">
               <el-input placeholder="请输入内容" v-model="form.point" class="input-with-select">
                   <el-select style="width:100px" v-model="form.priceType" slot="prepend" placeholder="定价">                  
                       <el-option v-for="(value,key,index) in priceTypeMap" :key="index" :label="value" :value="key"></el-option>
@@ -350,7 +348,7 @@
 //     "priceType":"add",
 //     "point":5
 // }
-  const defaultForm = { id: null, merchantNo: '', paymentTypes: null, spotFee: null, fullFee: null,gradientPrices:null,
+  const defaultForm = { id: null, agentId:null,merchantNo: '', paymentTypes: null, spotFee: null, fullFee: null,gradientPrices:null,
           point:null,priceType:null,sourcePriceType:null ,fixCommissionAmount :null,rateCommissionPoint : null, rateCommissionType: null,
           profitRate : null ,organization:null,rate:{},fee:{},commission:{}}
   var paymentTypeDatas = []; // 多选时使用
@@ -507,6 +505,9 @@
         const data = {
           id : "",
           agentId : form.id,
+          agentRate : form.rate,
+          agentFee : form.fee,
+          agentCommision:form.commission
         }
         return data
       },
@@ -517,7 +518,8 @@
         this.sourcePriceTypList = this.getSourcePriceTypeList()
       },
       // 新增前将多选的值设置为空
-      [CRUD.HOOK.beforeToAdd]() {
+      [CRUD.HOOK.beforeToAdd](crud,form) {
+        console.log(form)
       },
       [CRUD.HOOK.afterSubmit] (crud,form) {
         this.merchantList[form.id] = form;
