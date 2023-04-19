@@ -336,7 +336,7 @@
         return list;
       },
       delGradientPrices(form,index) {
-        form.gradientPrices.splice(index,1);
+        form.gradientRates.splice(index,1);
       },
       // 新增与编辑前做的操作
       [CRUD.HOOK.afterToCU](crud, form) {
