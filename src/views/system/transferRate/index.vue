@@ -221,7 +221,7 @@
         paymentTypeMap : {0 : "学费", 1 : "生活费", 2 : "保证金", 3 : "保险", 4 : "房租", 5:"医疗"},
         priceTypeMap : {add:"加",sub:"减",mul:"乘",div:"除"},
         serviceTypeMap : {lessEqual : "<=",greater : ">"},
-        sourcePriceTypMap : {spotBuy:"现汇买入",spotSell:"现汇卖出",cashBuy:"现钞买入",cashSell:"现钞卖出",price:"中间价"},
+        sourcePriceTypMap : {spotBuy:"现汇买入",spotSell:"现汇卖出",cashBuy:"现钞买入",cashSell:"现钞卖出",price:"熊猫汇率"},
     
         // 缴费选项
         paymentTypeList : [],
@@ -381,6 +381,11 @@
         }
         this.form.paymentTypes = this.paymentTypeDatas;
         this.form.currencies = this.currencyDatas;
+        if (this,form.merchantNo == 'nextpls') {
+          this.form.sourcePlatform = 'nextpls';
+        } else {
+          this.form.sourcePlatform = 'BOC';
+        }
         return true
       },
       
