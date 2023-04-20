@@ -348,7 +348,7 @@
 //     "priceType":"add",
 //     "point":5
 // }
-  const defaultForm = { id: null, agentId:null,merchantNo: '', paymentTypes: null, spotFee: null, fullFee: null,gradientPrices:null,
+  const defaultForm = { id: null, agentId:null,merchantNo: '', paymentTypes: null, spotFee: 0, fullFee: 0,gradientPrices:null,
           point:null,priceType:null,sourcePriceType:null ,fixCommissionAmount :null,rateCommissionPoint : null, rateCommissionType: null,
           profitRate : null ,organization:null,rate:{},fee:{},commission:{}}
   var paymentTypeDatas = []; // 多选时使用
