@@ -381,7 +381,7 @@
         }
         this.form.paymentTypes = this.paymentTypeDatas;
         this.form.currencies = this.currencyDatas;
-        if (this,form.merchantNo == 'nextpls') {
+        if (this.form.merchantNo == 'nextpls') {
           this.form.sourcePlatform = 'nextpls';
         } else {
           this.form.sourcePlatform = 'BOC';
