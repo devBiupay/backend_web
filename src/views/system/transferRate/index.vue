@@ -79,6 +79,15 @@
                     />
                 </el-select>
             </el-form-item>
+            <el-form-item label="电汇费" prop="point">
+              <el-input v-model="form.point">
+                        <!-- <em slot="suffix" style="margin:20px 10px 20px 16px; padding-left:10px;border-left:1px solid #C4C4C4">
+                            {{"CNY"}} 
+                        </em> -->
+              </el-input>
+            </el-form-item>
+
+
             <el-form-item label="汇率加点" prop="gradientRates">
                 <el-text v-for="(gradientPrice,index) in form.gradientRates" :key="gradientPrice" style="padding-bottom:10px">
                     <el-select v-model="gradientPrice.type" style="width:20%">
@@ -151,6 +160,7 @@
 
                 </template>
             </el-table-column>
+            <el-table-column label="电汇费" prop="point"></el-table-column>
                 
             <el-table-column :show-overflow-tooltip="true" prop="createTime" width="135px" label="创建日期" />
             <el-table-column
@@ -201,7 +211,7 @@
 //     "priceType":"add",
 //     "point":5
 // }
-  const defaultForm = { id: null, merchantNo: 'nextpls', gradientRates:[],paymentTypes: null, currencies: null, sourcePlatform: null,sourcePriceType:null,priceType:null }
+  const defaultForm = { id: null,point:0, merchantNo: 'nextpls', gradientRates:[],paymentTypes: null, currencies: null, sourcePlatform: null,sourcePriceType:null,priceType:null }
   var paymentTypeDatas = []; // 多选时使用
   var currencyDatas = [];
   var paymentTypeMap,priceTypeMap,sourcePriceTypMap = {};
