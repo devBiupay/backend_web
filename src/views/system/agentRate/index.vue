@@ -74,28 +74,29 @@
     },
     methods: {
 
-        filterChange(filterObj) {
-            if (filterObj.paymentTypeFilter) {
-              this.query.paymentTypes = filterObj.paymentTypeFilter.toString();
-            }
+      [CRUD.HOOK.beforeRefresh](crud) {
+        if (this.query.paymentTypes == undefined) {
+          this.query.paymentTypes = "0";
+        }
+        return true
+      },
 
-            if (this.query.paymentTypes == "") {
-              this.query.paymentTypes = "0";
-            }
-            if (filterObj.currencyFilter) {
-              this.query.currencies = filterObj.currencyFilter.toString();
-            }
-            console.log("filter")
-            console.log(this.query.paymentTypes)
-            this.crud.toQuery();
-        },
-        getPaymentTypeList() {
-            const list = []
-            for (var key in this.paymentTypeMap) {
-                list.push({text:this.paymentTypeMap[key],value:key});
-            }
-            return list;
-        },
+      filterChange(filterObj) {
+          if (filterObj.paymentTypeFilter) {
+            this.query.paymentTypes = filterObj.paymentTypeFilter.toString();
+          }
+          if (filterObj.currencyFilter) {
+            this.query.currencies = filterObj.currencyFilter.toString();
+          }
+          this.crud.toQuery();
+      },
+      getPaymentTypeList() {
+          const list = []
+          for (var key in this.paymentTypeMap) {
+              list.push({text:this.paymentTypeMap[key],value:key});
+          }
+          return list;
+      },
     }
   }
   </script>
