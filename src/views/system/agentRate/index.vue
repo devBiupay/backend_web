@@ -77,13 +77,16 @@
         filterChange(filterObj) {
             if (filterObj.paymentTypeFilter) {
               this.query.paymentTypes = filterObj.paymentTypeFilter.toString();
-            } else {
-              // 默认只展示学费
+            }
+
+            if (this.query.paymentTypes == "") {
               this.query.paymentTypes = "0";
             }
             if (filterObj.currencyFilter) {
               this.query.currencies = filterObj.currencyFilter.toString();
             }
+            console.log("filter")
+            console.log(this.query.paymentTypes)
             this.crud.toQuery();
         },
         getPaymentTypeList() {
