@@ -7,11 +7,11 @@
         <crudOperation show="" :permission="permission" />
         <el-table ref="table" @filter-change="filterChange" v-loading="crud.loading" :data="crud.data" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
             <el-table-column prop="currency" label="货币" column-key="currencyFilter" :filters="currenciesList" />
-            <el-table-column prop="paymentType" label="业务" column-key="paymentTypeFilter" :filters="getPaymentTypeList()" >
+            <!-- <el-table-column prop="paymentType" label="业务" column-key="paymentTypeFilter" :filters="getPaymentTypeList()" >
                 <template slot-scope="scope">
                         {{paymentTypeMap[scope.row.paymentType]}}
                 </template>
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column prop="rate" label="汇率" />
         </el-table>
           <!--分页组件-->
@@ -76,10 +76,13 @@
 
         filterChange(filterObj) {
             if (filterObj.paymentTypeFilter) {
-                this.query.paymentTypes = filterObj.paymentTypeFilter.toString();
+              this.query.paymentTypes = filterObj.paymentTypeFilter.toString();
+            } else {
+              // 默认只展示学费
+              this.query.paymentTypes = "0";
             }
             if (filterObj.currencyFilter) {
-                this.query.currencies = filterObj.currencyFilter.toString();
+              this.query.currencies = filterObj.currencyFilter.toString();
             }
             this.crud.toQuery();
         },
