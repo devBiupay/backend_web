@@ -30,7 +30,7 @@
             </el-form-item>
             <el-form-item  label="业务类型" prop="paymentTypes">
                 <el-select
-                    v-model="paymentTypeDatas"
+                    v-model="b"
                     style="width: 437px"
                     multiple
                     placeholder="请选择"

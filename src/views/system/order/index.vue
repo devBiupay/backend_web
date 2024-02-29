@@ -174,7 +174,7 @@
               <el-descriptions-item label="下发人民金额">{{dialogInfo.transferInfo?.cnyAmount}}</el-descriptions-item>
 
             </el-descriptions>
-            <div style="text-align: right;">
+            <div style="text-align: right;" v-if="!isHaiyiPay()">
               <el-button :loading="preTransferLoading" type="primary" @click="preTransfer(dialogInfo)">重新预下单</el-button>
               <el-button :loading="editLoading" type="primary" @click="edit(dialogInfo)" el-button>更新订单信息</el-button>
               <el-button :loading="updateStatusLoading" type="primary" @click="updateOrderStatus(dialogInfo.id)" el-button>修改订单状态</el-button>
@@ -227,6 +227,7 @@
   
   <script>
   import crudOrder from '@/api/system/order'
+  import store from '@/store'
   import { isvalidPhone } from '@/utils/validate'
   import CRUD, { presenter, header, form, crud } from '@crud/crud'
   import rrOperation from '@crud/RR.operation'
@@ -340,6 +341,17 @@
         return JSON.stringify(dialogInfo.kyc) != undefined && JSON.stringify(dialogInfo.kyc) !="{}"
       },
 
+      isHaiyiPay() {
+        const roles = store.getters.user.roles;
+        for (let index in roles) {
+          const role = roles[index]
+          if (role.name=='海医付') {
+            return true;
+          }
+        }
+        return false;
+      },
+
       imageVisible(url) {
         if (url.indexOf(".pdf") > -1) {
           this.handleDownloadUrl(url)
@@ -371,6 +383,10 @@
 
       getPaymentTypeList() {
         const paymentTypeList = []
+        if (this.isHaiyiPay()) {
+          paymentTypeList.push({text:"医疗",value:"5"})
+          return paymentTypeList;
+        }
         for (var key in this.paymentTypeMap) {
           paymentTypeList.push({text:this.paymentTypeMap[key],value:key})
         } 
@@ -454,7 +470,7 @@
           if (filterObj.paymentTypeFilter) {
             this.query.paymentType = filterObj.paymentTypeFilter.toString();
           }
-            this.crud.toQuery();
+          this.crud.toQuery();
         },
       changeRole(value) {
         userRoles = []
@@ -480,6 +496,12 @@
       // 新增与编辑前做的操作
       [CRUD.HOOK.afterToCU](crud, form) {
         form.enabled = form.enabled.toString()
+      },
+      [CRUD.HOOK.beforeRefresh](crud) {
+        if (this.isHaiyiPay()) {
+          this.query.paymentType = "5";
+        }
+        return true
       },
       // 新增前将多选的值设置为空
       [CRUD.HOOK.beforeToAdd]() {
