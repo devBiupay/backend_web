@@ -197,8 +197,8 @@
                     {{scope.row.amount}} {{scope.row.currency}}  
                 </template>
             </el-table-column>
-            <el-table-column :show-overflow-tooltip="true" prop="rate" label="汇率" />
-            <el-table-column :show-overflow-tooltip="true" prop="cnyFee" label="手续费(CNY)" />
+            <el-table-column v-if="!isHaiyiPay()" :show-overflow-tooltip="true" prop="rate" label="汇率" />
+            <el-table-column v-if="!isHaiyiPay()" :show-overflow-tooltip="true" prop="cnyFee" label="手续费(CNY)" />
             <el-table-column :show-overflow-tooltip="true" prop="cnyAmount" label="支付金额(CNY)" />
             <el-table-column :show-overflow-tooltip="true" column-key="paymentTypeFilter" :filters="getPaymentTypeList()" prop="status" label="缴费类型" >
                 <template slot-scope="scope">
@@ -212,7 +212,7 @@
             </el-table-column>
 
             <el-table-column :show-overflow-tooltip="true" prop="createTime" width="135px" label="创建日期" />
-            <el-table-column label="查看详情" width="100px">
+            <el-table-column v-if="!isHaiyiPay()" label="查看详情" width="100px">
               <template slot-scope="scope">
                 <el-button size="mini" type="text" @click="info(scope.row)">查看详情</el-button>
               </template>
@@ -342,10 +342,13 @@
       },
 
       isHaiyiPay() {
+        return this.isRole("海医付")
+      },
+      isRole(name) {
         const roles = store.getters.user.roles;
         for (let index in roles) {
           const role = roles[index]
-          if (role.name=='海医付') {
+          if (role.name==name) {
             return true;
           }
         }
@@ -500,6 +503,9 @@
       [CRUD.HOOK.beforeRefresh](crud) {
         if (this.isHaiyiPay()) {
           this.query.paymentType = "5";
+        }
+        if (this.isRole("2617")) {
+          this.query.resource = "2617";
         }
         return true
       },
