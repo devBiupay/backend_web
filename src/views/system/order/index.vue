@@ -506,6 +506,8 @@
         }
         if (this.isRole("2617")) {
           this.query.resource = "2617";
+        } else if (this.isRole("3974")) {
+          this.query.resource = "3974";
         }
         return true
       },
