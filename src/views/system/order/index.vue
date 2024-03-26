@@ -508,6 +508,10 @@
           this.query.resource = "2617";
         } else if (this.isRole("3974")) {
           this.query.resource = "3974";
+        } else if (this.isRole("3978")) {
+          this.query.resource = "3978"
+        } else if (this.isRole("3977")) {
+          this.query.resource = "3977"
         }
         return true
       },
