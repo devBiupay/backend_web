@@ -174,7 +174,7 @@
               <el-descriptions-item label="下发人民金额">{{dialogInfo.transferInfo?.cnyAmount}}</el-descriptions-item>
 
             </el-descriptions>
-            <div style="text-align: right;" v-if="!isHaiyiPay()">
+            <div style="text-align: right;" v-if="!(isHaiyiPay() || isMerchant())">
               <el-button :loading="preTransferLoading" type="primary" @click="preTransfer(dialogInfo)">重新预下单</el-button>
               <el-button :loading="editLoading" type="primary" @click="edit(dialogInfo)" el-button>更新订单信息</el-button>
               <el-button :loading="updateStatusLoading" type="primary" @click="updateOrderStatus(dialogInfo.id)" el-button>修改订单状态</el-button>
@@ -197,8 +197,8 @@
                     {{scope.row.amount}} {{scope.row.currency}}  
                 </template>
             </el-table-column>
-            <el-table-column v-if="!isHaiyiPay()" :show-overflow-tooltip="true" prop="rate" label="汇率" />
-            <el-table-column v-if="!isHaiyiPay()" :show-overflow-tooltip="true" prop="cnyFee" label="手续费(CNY)" />
+            <el-table-column v-if="!(isHaiyiPay() || isMerchant())" :show-overflow-tooltip="true" prop="rate" label="汇率" />
+            <el-table-column v-if="!(isHaiyiPay() || isMerchant())" :show-overflow-tooltip="true" prop="cnyFee" label="手续费(CNY)" />
             <el-table-column :show-overflow-tooltip="true" prop="cnyAmount" label="支付金额(CNY)" />
             <el-table-column :show-overflow-tooltip="true" column-key="paymentTypeFilter" :filters="getPaymentTypeList()" prop="status" label="缴费类型" >
                 <template slot-scope="scope">
@@ -212,7 +212,7 @@
             </el-table-column>
 
             <el-table-column :show-overflow-tooltip="true" prop="createTime" width="135px" label="创建日期" />
-            <el-table-column v-if="!isHaiyiPay()" label="查看详情" width="100px">
+            <el-table-column v-if="!(isHaiyiPay() || isMerchant())" label="查看详情" width="100px">
               <template slot-scope="scope">
                 <el-button size="mini" type="text" @click="info(scope.row)">查看详情</el-button>
               </template>
@@ -343,6 +343,9 @@
 
       isHaiyiPay() {
         return this.isRole("海医付")
+      },
+      isMerchant() {
+        return this.isRole("商务")
       },
       isRole(name) {
         const roles = store.getters.user.roles;
