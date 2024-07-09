@@ -512,6 +512,8 @@
           this.query.resource = "3978"
         } else if (this.isRole("3977")) {
           this.query.resource = "3977"
+        } else if (this.isRole("3981")) {
+          this.query.resource = "3981"
         }
         return true
       },
