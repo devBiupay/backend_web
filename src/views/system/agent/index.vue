@@ -375,7 +375,7 @@
         sourcePriceTypList :[],
         gradientType :["CNY","%"],
         // 缴费类型 0-学费 1-生活费 2-保证金 3-保险 4-房租 5-医疗
-        paymentTypeMap : {0 : "学费", 1 : "生活费", 2 : "保证金", 3 : "保险", 4 : "房租", 5 :"医疗"},
+        paymentTypeMap : {0 : "学费", 1 : "生活费", 2 : "保证金", 3 : "保险", 4 : "房租", 5 :"医疗", 6:"旅游"},
         serviceTypeMap : {lessEqual : "<=",greater : ">"},
         currenciesList : [{text:"USD",value:"USD"},{text:"EUR",value:"EUR"},{text:"GBP",value:"GBP"},
                     {text:"AUD",value:"AUD"},{text:"CAD",value:"CAD"},{text:"CHF",value:"CHF"},

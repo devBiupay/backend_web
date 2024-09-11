@@ -114,9 +114,9 @@
         height: document.documentElement.clientHeight - 180 + 'px;',
         currencyDatas : [], serviceTypeDatas: [], // 多选时使用
         // 缴费类型 0-学费 1-生活费 2-保证金 3-保险 4-房租 5医疗
-        paymentTypeMap : {0 : "学费", 1 : "生活费", 2 : "保证金", 3 : "保险", 4 : "房租", 5:"医疗"},
+        paymentTypeMap : {0 : "学费", 1 : "生活费", 2 : "保证金", 3 : "保险", 4 : "房租", 5:"医疗",6:"旅游"},
         paymentTypeList : [{value:0 ,text: "学费"},{value: 1 ,text: "生活费"},
-                    {value: 2 ,text: "保证金"}, {value:3,text : "保险"},{value: 4 ,text : "房租"},{value: 5,text: "医疗"}],
+                    {value: 2 ,text: "保证金"}, {value:3,text : "保险"},{value: 4 ,text : "房租"},{value: 5,text: "医疗"},{value: 56,text: "旅游"}],
 
         countryList : [{text:'DE',value:'DE'},{text:'GBR',value:'GBR'},{text:"KO",value:'KO'},{text:"MY",value:"MY"}],
         currencyList : [{text:'EUR',value:'EUR'},{text:'GBP',value:'GBP'},{text:"KRW",value:'KRW'},{text:"AUD",value:'AUD'},{text:"MYR",value:"MYR"}],

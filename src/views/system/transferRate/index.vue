@@ -228,7 +228,7 @@
         height: document.documentElement.clientHeight - 180 + 'px;',
         currencyDatas : [], paymentTypeDatas: [], // 多选时使用
         // 缴费类型 0-学费 1-生活费 2-保证金 3-保险 4-房租 5-医疗
-        paymentTypeMap : {0 : "学费", 1 : "生活费", 2 : "保证金", 3 : "保险", 4 : "房租", 5:"医疗"},
+        paymentTypeMap : {0 : "学费", 1 : "生活费", 2 : "保证金", 3 : "保险", 4 : "房租", 5:"医疗",6:"旅游"},
         priceTypeMap : {add:"加",sub:"减",mul:"乘",div:"除"},
         serviceTypeMap : {lessEqual : "<=",greater : ">"},
         sourcePriceTypMap : {spotBuy:"现汇买入",spotSell:"现汇卖出",cashBuy:"现钞买入",cashSell:"现钞卖出",price:"熊猫汇率"},
