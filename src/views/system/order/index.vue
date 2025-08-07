@@ -82,9 +82,9 @@
             <div class="lineOfDivision"></div>
             <el-descriptions title="订单基本信息" bordered>
               <el-descriptions-item label="订单编号">{{dialogInfo.id}}</el-descriptions-item>
-              <el-descriptions-item label="收款渠道编号">{{dialogInfo.depositId}}</el-descriptions-item>
+              <el-descriptions-item v-if="isRole('biupay')" label="收款渠道编号">{{dialogInfo.depositId}}</el-descriptions-item>
               <el-descriptions-item v-if="isRole('biupay')"  label="收款渠道">{{dialogInfo.depositChannel}}</el-descriptions-item>
-              <el-descriptions-item label="下发渠道编号">{{dialogInfo.transferId}}</el-descriptions-item>
+              <el-descriptions-item v-if="isRole('biupay')" label="下发渠道编号">{{dialogInfo.transferId}}</el-descriptions-item>
 
               <el-descriptions-item v-if="isRole('biupay')" label="下发渠道">{{dialogInfo.transferChannel}}</el-descriptions-item>
               <el-descriptions-item label="订单状态">{{stausMap[dialogInfo.status]}}</el-descriptions-item>
@@ -175,7 +175,7 @@
               <el-descriptions-item v-if="isRole('biupay')"  label="下发人民金额">{{dialogInfo.transferInfo?.cnyAmount}}</el-descriptions-item>
 
             </el-descriptions>
-            <div style="text-align: right;" v-if="!(isHaiyiPay() || isMerchant())">
+            <div style="text-align: right;" v-if="isRole('biupay')">
               <el-button :loading="preTransferLoading" type="primary" @click="preTransfer(dialogInfo)">重新预下单</el-button>
               <el-button :loading="editLoading" type="primary" @click="edit(dialogInfo)" el-button>更新订单信息</el-button>
               <el-button :loading="updateStatusLoading" type="primary" @click="updateOrderStatus(dialogInfo.id)" el-button>修改订单状态</el-button>
