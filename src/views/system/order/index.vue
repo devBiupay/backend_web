@@ -83,9 +83,10 @@
             <el-descriptions title="订单基本信息" bordered>
               <el-descriptions-item label="订单编号">{{dialogInfo.id}}</el-descriptions-item>
               <el-descriptions-item label="收款渠道编号">{{dialogInfo.depositId}}</el-descriptions-item>
-              <el-descriptions-item label="收款渠道">{{dialogInfo.depositChannel}}</el-descriptions-item>
+              <el-descriptions-item v-if="isRole('biupay')"  label="收款渠道">{{dialogInfo.depositChannel}}</el-descriptions-item>
               <el-descriptions-item label="下发渠道编号">{{dialogInfo.transferId}}</el-descriptions-item>
-              <el-descriptions-item label="下发渠道">{{dialogInfo.transferChannel}}</el-descriptions-item>
+
+              <el-descriptions-item v-if="isRole('biupay')" label="下发渠道">{{dialogInfo.transferChannel}}</el-descriptions-item>
               <el-descriptions-item label="订单状态">{{stausMap[dialogInfo.status]}}</el-descriptions-item>
               <el-descriptions-item label="汇款金额">{{dialogInfo.amount}} {{dialogInfo.currency}}</el-descriptions-item>
               <el-descriptions-item label="订单截止时间">{{dialogInfo.deadLineDate}}</el-descriptions-item>
@@ -168,10 +169,10 @@
               <el-descriptions-item label="收款银行">{{dialogInfo.payment?.bankName}}</el-descriptions-item>
               <el-descriptions-item label="银行地址">{{dialogInfo.payment?.bankAddress}}</el-descriptions-item>
               <el-descriptions-item label="附言">{{dialogInfo.reference}}</el-descriptions-item>
-              <el-descriptions-item label="下发汇率">{{dialogInfo.transferInfo?.rate}}</el-descriptions-item>
-              <el-descriptions-item label="下发币种">{{dialogInfo.transferInfo?.currency}}</el-descriptions-item>
-              <el-descriptions-item label="下发外币金额">{{dialogInfo.transferInfo?.amount}}</el-descriptions-item>
-              <el-descriptions-item label="下发人民金额">{{dialogInfo.transferInfo?.cnyAmount}}</el-descriptions-item>
+              <el-descriptions-item v-if="isRole('biupay')"  label="下发汇率">{{dialogInfo.transferInfo?.rate}}</el-descriptions-item>
+              <el-descriptions-item v-if="isRole('biupay')"  label="下发币种">{{dialogInfo.transferInfo?.currency}}</el-descriptions-item>
+              <el-descriptions-item v-if="isRole('biupay')"  label="下发外币金额">{{dialogInfo.transferInfo?.amount}}</el-descriptions-item>
+              <el-descriptions-item v-if="isRole('biupay')"  label="下发人民金额">{{dialogInfo.transferInfo?.cnyAmount}}</el-descriptions-item>
 
             </el-descriptions>
             <div style="text-align: right;" v-if="!(isHaiyiPay() || isMerchant())">
