@@ -91,9 +91,9 @@
               <el-descriptions-item label="汇款金额">{{dialogInfo.amount}} {{dialogInfo.currency}}</el-descriptions-item>
               <el-descriptions-item label="订单截止时间">{{dialogInfo.deadLineDate}}</el-descriptions-item>
               <el-descriptions-item label="订单汇率">{{dialogInfo.rate}}</el-descriptions-item>
-              <el-descriptions-item label="电汇费">{{dialogInfo.spotFee}}</el-descriptions-item>
-              <el-descriptions-item label="足额到账费">{{dialogInfo.fullFee}}</el-descriptions-item>
-              <el-descriptions-item label="手续费">{{dialogInfo.cnyFee}}</el-descriptions-item>
+              <el-descriptions-item v-if="isRole('biupay')" label="电汇费">{{dialogInfo.spotFee}}</el-descriptions-item>
+              <el-descriptions-item v-if="isRole('biupay')" label="足额到账费">{{dialogInfo.fullFee}}</el-descriptions-item>
+              <el-descriptions-item v-if="isRole('biupay')" label="手续费">{{dialogInfo.cnyFee}}</el-descriptions-item>
               <el-descriptions-item label="需支付金额">{{dialogInfo.cnyAmount}}{{" CNY"}}</el-descriptions-item>
               <el-descriptions-item label="缴费类型">{{paymentTypeMap[dialogInfo.paymentType]}}</el-descriptions-item>
             </el-descriptions>
